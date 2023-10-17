@@ -11,7 +11,7 @@ import java.awt.*;
 import java.text.NumberFormat;
 
 import model.Transaction;
-
+import controller.InputValidation;
 import java.util.ArrayList;
 import java.util.List;
 import model.filters.AmountFilter;
@@ -68,7 +68,14 @@ public class ExpenseTrackerView extends JFrame {
           return;
         }
       } else if ("Category".equals(filterType)) {
-        filteredTransactions = controller.applyFilter(new CategoryFilter(filterInput.getText()));
+         if (InputValidation.isValidCategory(filterInput.getText())) {
+          CategoryFilter category = new CategoryFilter(filterInput.getText());
+          filteredTransactions = controller.applyFilter(category);
+        } else{
+          JOptionPane.showMessageDialog(this, "Invalid category!");
+          return;
+        }
+
       } else {
         return;
       }
