@@ -1,36 +1,26 @@
 package view;
 
 import javax.swing.*;
-import javax.swing.JFormattedTextField.AbstractFormatterFactory;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-
-import controller.InputValidation;
-
 import java.awt.*;
 import java.text.NumberFormat;
 
 import model.Transaction;
-import controller.InputValidation;
 import java.util.ArrayList;
 import java.util.List;
-import model.filters.AmountFilter;
-import model.filters.CategoryFilter;
 import controller.ExpenseTrackerController;
 
 public class ExpenseTrackerView extends JFrame {
 
   private JTable transactionsTable;
   private JButton addTransactionBtn;
+  private JButton applyFilterBtn;
   private JFormattedTextField amountField;
   private JTextField categoryField;
   private DefaultTableModel model;
   private JTextField filterInput;
   private JComboBox<String> filterComboBox;
   private ExpenseTrackerController controller;
-  private List<Integer> filteredRows = new ArrayList<>();
-  private List<Transaction> filteredTransactions = new ArrayList<>();
-
 
   public ExpenseTrackerView() {
     setTitle("Expense Tracker"); // Set title
@@ -55,62 +45,10 @@ public class ExpenseTrackerView extends JFrame {
     JLabel filterLabel = new JLabel("Filter by:");
     filterInput = new JTextField(10);
     filterComboBox = new JComboBox<>(new String[]{"Amount", "Category"});
-    JButton applyFilterBtn = new JButton("Apply Filter");
-    applyFilterBtn.addActionListener(e -> {
-      filteredRows.clear();
-      String filterType = (String) filterComboBox.getSelectedItem();
-      if ("Amount".equals(filterType)) {
-        try {
-          double amount = Double.parseDouble(filterInput.getText());
-          filteredTransactions = controller.applyFilter(new AmountFilter(amount));
-        } catch (NumberFormatException ex) {
-          JOptionPane.showMessageDialog(this, "Invalid amount format!");
-          return;
-        }
-      } else if ("Category".equals(filterType)) {
-         if (InputValidation.isValidCategory(filterInput.getText())) {
-          CategoryFilter category = new CategoryFilter(filterInput.getText());
-          filteredTransactions = controller.applyFilter(category);
-        } else{
-          JOptionPane.showMessageDialog(this, "Invalid category!");
-          return;
-        }
-
-      } else {
-        return;
-      }
-
-      List<Transaction> allTransactions = controller.getAllTransactions();
-      for (int i = 0; i < allTransactions.size(); i++) {
-        if (filteredTransactions.contains(allTransactions.get(i))) {
-          filteredRows.add(i);
-        }
-      }
-      transactionsTable.repaint();
-      refreshTable(controller.getAllTransactions());
-    });
-
+    applyFilterBtn = new JButton("Apply Filter");
 
     // Create table
     transactionsTable = new JTable(model);
-    transactionsTable.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
-      @Override
-      public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
-                                                     boolean hasFocus, int row, int column) {
-        Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-        if (isSelected) {
-          c.setBackground(table.getSelectionBackground());
-        } else {
-          if (filteredRows.contains(row)) {
-            c.setBackground(new Color(173, 255, 168)); // Light green
-          } else {
-            c.setBackground(table.getBackground());
-          }
-        }
-        return c;
-      }
-    });
-
 
     // Layout components
     JPanel inputPanel = new JPanel();
@@ -155,7 +93,6 @@ public class ExpenseTrackerView extends JFrame {
     model.addRow(totalRow);
 
     transactionsTable.updateUI();
-
   }
 
   public void setController(ExpenseTrackerController controller) {
@@ -165,6 +102,7 @@ public class ExpenseTrackerView extends JFrame {
   public JButton getAddTransactionBtn() {
     return addTransactionBtn;
   }
+
   public DefaultTableModel getTableModel() {
     return model;
   }
@@ -193,5 +131,19 @@ public class ExpenseTrackerView extends JFrame {
 
   public void setCategoryField(JTextField categoryField) {
     this.categoryField = categoryField;
+  }
+
+  // ... rest of ExpenseTrackerView class ...
+
+  public JButton getApplyFilterBtn() {
+    return applyFilterBtn;
+  }
+
+  public String getSelectedFilterType() {
+    return (String) filterComboBox.getSelectedItem();
+  }
+
+  public String getFilterValue() {
+    return filterInput.getText();
   }
 }
