@@ -18,6 +18,8 @@ public class ExpenseTrackerController {
   private ExpenseTrackerView view;
   private TransactionFilter transactionFilter;
 
+  List<Integer> emptySelectedList = new ArrayList<>();
+
   public ExpenseTrackerController(ExpenseTrackerModel model, ExpenseTrackerView view) {
     this.model = model;
     this.view = view;
@@ -36,6 +38,7 @@ public class ExpenseTrackerController {
   }
 
   public boolean addTransaction(double amount, String category) {
+
     if (!InputValidation.isValidAmount(amount)) {
       return false;
     }
@@ -46,26 +49,33 @@ public class ExpenseTrackerController {
     Transaction t = new Transaction(amount, category);
     model.addTransaction(t);
     view.getTableModel().addRow(new Object[]{t.getAmount(), t.getCategory(), t.getTimestamp()});
+    view.setSelectedRows(emptySelectedList);
     refresh();
     return true;
   }
 
-  public List<Transaction> filterTransactions(String attribute , String attributeValue) {
-    TransactionFilter filter;
-    List<Transaction> selectedRows = new ArrayList<>();
-    List<Integer> selectedRowsIndex = new ArrayList<>();
+  public boolean filterTransactions(String attribute , String attributeValue) {
+
+    TransactionFilter filter = null;
     if(attribute == "Category")
     {
+      if (!InputValidation.isValidCategory(attributeValue)) {
+        return false;
+      }
       filter = new CategoryFilter(attributeValue);
     }
     else if(attribute == "Amount")
     {
-      filter = new AmountFilter(attributeValue);
+      double amountDouble = Double.parseDouble(attributeValue);
+      if (!InputValidation.isValidAmount(amountDouble)) {
+        return false;
+      }
+      filter = new AmountFilter(amountDouble);
     }
-    selectedRows = transactionFilter.filter(model.getTransactions());
-
+    List<Integer> selectedRows  = filter.filter(model.getTransactions());
+    view.setSelectedRows(selectedRows);
     refresh();
-    return selectedRows;
+    return true;
   }
 
 

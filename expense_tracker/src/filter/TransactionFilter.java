@@ -5,6 +5,6 @@ import model.Transaction;
 import java.util.List;
 
 public interface TransactionFilter {
-    List<Transaction> filter(List<Transaction> inputList);
+    List<Integer> filter(List<Transaction> inputList);
 
 }

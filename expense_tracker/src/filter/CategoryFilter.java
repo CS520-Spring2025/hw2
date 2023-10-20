@@ -13,13 +13,13 @@ public class CategoryFilter implements TransactionFilter{
       this.category = category;
     }
 
-    public List<Transaction> filter(List<Transaction> inputList){
-        List<Transaction> filteredList = new ArrayList<>();
-        for(Transaction transaction : inputList)
+    public List<Integer> filter(List<Transaction> inputList){
+        List<Integer> filteredList = new ArrayList<>();
+        for(int i= 0; i< inputList.size();i++)
         {
-            if(transaction.getCategory().equals(this.category))
+            if(inputList.get(i).getCategory().equals(this.category))
             {
-                filteredList.add(transaction);
+                filteredList.add(i);
             }
         }
       return filteredList;

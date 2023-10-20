@@ -43,9 +43,12 @@ public class ExpenseTrackerApp {
       String attributeValue = view.getFilterField();
 
 
-      // Call controller to add transaction
-      controller.filterTransactions(attribute, attributeValue);
-
+      // Call controller to filter transaction
+      boolean filtered = controller.filterTransactions(attribute, attributeValue);
+      if (!filtered) {
+        JOptionPane.showMessageDialog(view, "Invalid amount or category entered");
+        view.toFront();
+        }
     });
 
   }

@@ -84,18 +84,25 @@ public class ExpenseTrackerView extends JFrame {
     inputPanel.add(addTransactionBtn);
     inputPanel.add(filterBtn); //ask doubt
     // Add the category dropdown to the input panel
-    inputPanel.add(categoryDropdown);
-    inputPanel.add(filterField);
+//    inputPanel.add(categoryDropdown);
+//    inputPanel.add(filterField);
 
     //my code
     JPanel addTransactionPanel = new JPanel();
     addTransactionPanel.add(addTransactionBtn);
     JPanel filterPanel = new JPanel();
     filterPanel.add(filterBtn);
+    JPanel filterFieldPanel = new JPanel();
+    filterFieldPanel.add(filterField);
+    JPanel categoryDropdownPanel = new JPanel();
+    categoryDropdownPanel.add(categoryDropdown);
+
 
     // Create the buttonPanel with a GridLayout
-    JPanel buttonPanel = new JPanel(new GridLayout(1, 2)); // Two buttons in a row
+    JPanel buttonPanel = new JPanel(new GridLayout(1, 4)); // Two buttons in a row
     buttonPanel.add(addTransactionPanel);
+    buttonPanel.add(categoryDropdownPanel);
+    buttonPanel.add(filterFieldPanel);
     buttonPanel.add(filterPanel);
 
     //end of my code
@@ -192,5 +199,10 @@ public class ExpenseTrackerView extends JFrame {
 
   public void setCategoryField(JTextField categoryField) {
     this.categoryField = categoryField;
+  }
+
+  public void setSelectedRows(List<Integer> colouredRows)
+  {
+    selectedRows = colouredRows;
   }
 }
